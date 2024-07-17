@@ -1,3 +1,4 @@
+%% Copyright 2024 by Owethu Kheswa
 syms s
 
 D = (-s - 1)/(3*s + 2);
