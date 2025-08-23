@@ -1,0 +1,13 @@
+%Initializing data
+s = tf('s');
+d=12; a0=.02; D=1; P=1/0.5; 
+
+%creating G(s):
+%G = tf(pade(d,2))* tf(1,[1/a0 1]);
+
+% First controller 
+step(35+10*P*D/(1+G*D))
+
+%2nd Controller:
+D =0.7;
+step(35+10*P*D/(1+G*D))
