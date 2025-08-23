@@ -11,3 +11,7 @@ step(35+10*P*D/(1+G*D))
 %2nd Controller:
 D =0.7;
 step(35+10*P*D/(1+G*D))
+
+%% My controller:
+D = 1.5*(1+(1/(50*s)));
+step(35+10*P*D/(1+G*D))
