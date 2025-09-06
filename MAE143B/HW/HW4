@@ -1,0 +1,55 @@
+%% Problem 1:
+
+K = 274.23; p = 10; z = 10;
+G_num = 1;
+G_den = [1 0 100];
+G = RR_tf(G_num,G_den);
+D_num = K*[1 0 z^2];
+D_den = [1 2*p p^2];
+D = RR_tf(D_num,D_den);
+g.K = logspace(-5, 5, 1000); % changing K span
+g.ls_y = "-";
+figure(1); RR_rlocus(G,D,g)
+figure(2); RR_step(G*D/(1+G*D),g)
+
+%% Problem 2
+G_num = 1; % G numerator coefficients
+G_den = [1 0 100]; % G denominator coefficients
+G = RR_tf(G_num, G_den); % G(s)
+p1 = 10; z1_n = 0.97 * p1; % notch zeros
+
+syms z1 K s
+D = K * (s^2 + z1^2) / (s + z1)^2 ; % D1(s)
+K_n = 274.23; % proportional gain
+D1 = subs(D, {z1, K}, {z1_n, K_n});
+[num,den] = numden(D1); % this extracts the num and den of G
+D_num=double(coeffs(num,s,'All')); % extracts coeffs of the powers of s
+D_den=double(coeffs(den,s,'All')); % do not remove 'All'
+D1 = RR_tf(D_num, D_den); % D1(s) transfer fcn
+g.K = logspace(-5, 5, 1000); % changing K span
+g.ls_y = "-";
+figure(1); RR_rlocus(G, D1, g); % plotting
+figure(2); RR_step(G*D1/(1+G*D1), g); hold on;
+
+P = (100 +274.23)/274.23;
+figure(3); RR_step(P * G*D1/(1+G*D1), g);
+
+%% Problem 3:
+G_new = G*RR_pade(0.005,2,2);
+figure(1); RR_rlocus(G_new, D1, g); % plotting
+figure(2); RR_step(G_new*D1/(1+G_new*D1), g); hold on;
+
+%% Problem 4:
+G_new = G*RR_pade(0.005,8,8);
+figure(1); RR_rlocus(G_new, D1, g); % plotting
+figure(2); RR_step(G_new*D1/(1+G_new*D1), g); hold on;
+
+%% Problem 5:
+D_2z = RR_C2D_tustin(D1,0.01);
+tD_2z = RR_C2D_tustin(D1,0.01,10);
+
+%% Problem 7:
+Gz = RR_C2D_zoh(G,0.01);
+figure(1); RR_rlocus(Gz, tD_2z, g); % plotting
+figure(2); RR_step(Gz*tD_2z/(1+Gz*tD_2z), g); hold on;
+figure(3); RR_bode(Gz*tD_2z)
